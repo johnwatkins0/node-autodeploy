@@ -1,0 +1,45 @@
+{
+  "name": "node-autodeploy-wp",
+  "version": "1.0.0",
+  "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnwatkins0/node-autodeploy-wp.git"
+  },
+  "author": "John Watkins",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnwatkins0/node-autodeploy-wp/issues"
+  },
+  "homepage": "https://github.com/johnwatkins0/node-autodeploy-wp#readme",
+  "dependencies": {
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-node6": "^11.0.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.1.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.3",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-notify": "^3.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglify": "^2.0.1",
+    "gulp-util": "^3.0.8",
+    "gulp-watch": "^4.3.11",
+    "husky": "^0.13.2",
+    "jest": "^19.0.2",
+    "minimist": "^1.2.0",
+    "node-fs-extra": "^0.8.2",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
