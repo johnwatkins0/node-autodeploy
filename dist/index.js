@@ -23,7 +23,7 @@ var commandOptions = {
 function rsyncToServer(server) {
   var args = ['--perms', '--chmod=Du+rwx', '-arv'];
   if (settings.exclude) {
-    args = args.concat(settings.ignore.map(function (excludeGlob) {
+    args = args.concat(settings.exclude.map(function (excludeGlob) {
       return '--exclude=' + excludeGlob;
     }));
   }

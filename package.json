@@ -4,7 +4,7 @@
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepush": "if [ \"$(git branch)\" == \"* master\" ]; then npm version patch && npm publish; fi"
   },
   "repository": {
     "type": "git",

@@ -18,7 +18,7 @@ function rsyncToServer(server) {
   let args = ['--perms', '--chmod=Du+rwx', '-arv'];
   if (settings.exclude) {
     args = args.concat(
-      settings.ignore.map(excludeGlob => `--exclude=${excludeGlob}`),
+      settings.exclude.map(excludeGlob => `--exclude=${excludeGlob}`),
     );
   }
 
