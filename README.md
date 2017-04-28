@@ -18,14 +18,14 @@ Create a server config file, `.deploy-servers.js` in the project root. It should
 module.exports = {
   master: {
     active: false,
-		server: 'server-hostname',
+    server: 'server-hostname',
     destPath: '/path/on/the/server/',
     username: 'username',
     srcPath: `${__dirname}/`
   },
-	staging: {
+  staging: {
     active: true,
-		server: 'server-hostname',
+    server: 'server-hostname',
     destPath: '/path/on/the/server/',
     username: 'username',
     srcPath: `${__dirname}/`
