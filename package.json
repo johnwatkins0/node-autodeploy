@@ -1,6 +1,6 @@
 {
   "name": "node-autodeploy-wp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
   "main": "dist/index.js",
   "scripts": {
