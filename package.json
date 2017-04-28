@@ -2,8 +2,10 @@
   "name": "node-autodeploy-wp",
   "version": "1.0.2",
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+		"install": "node ./bin/install.js",
+    "uninstall": "node ./bin/uninstall.js",
     "prepush": "if [ \"$(git branch)\" == \"* master\" ]; then npm version patch && npm publish; fi"
   },
   "repository": {

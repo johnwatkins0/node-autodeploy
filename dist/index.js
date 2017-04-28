@@ -30,6 +30,8 @@ function rsyncToServer(server) {
 
   var command = 'rsync ' + args.join(' ') + ' ' + server.srcPath + ' ' + (server.username + '@' + server.server + ':' + server.destPath);
 
+  console.log(command);
+
   (0, _child_process.exec)(command, commandOptions, function (error, stdout) {
     if (error) {
       console.error('exec error: ' + error);

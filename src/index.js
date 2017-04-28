@@ -25,6 +25,8 @@ function rsyncToServer(server) {
   const command = `rsync ${args.join(' ')} ${server.srcPath} ` +
     `${server.username}@${server.server}:${server.destPath}`;
 
+  console.log(command);
+
   exec(command, commandOptions, (error, stdout) => {
     if (error) {
       console.error(`exec error: ${error}`);
