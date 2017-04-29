@@ -194,8 +194,6 @@ var NodeAutodeployWP = function () {
         }));
       }
 
-      console.log('server', this.serverConfig[gitBranch]);
-
       var command = 'rsync ' + args.join(' ') + ' ' + this.serverConfig[gitBranch].srcPath + ' ' + ('' + this.serverConfig[gitBranch].username) + ('@' + this.serverConfig[gitBranch].server) + (':' + this.serverConfig[gitBranch].destPath);
 
       console.log(command);

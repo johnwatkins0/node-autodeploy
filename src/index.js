@@ -163,8 +163,6 @@ class NodeAutodeployWP {
       );
     }
 
-    console.log('server', this.serverConfig[gitBranch]);
-
     const command = `rsync ${args.join(
       ' '
     )} ${this.serverConfig[gitBranch].srcPath} ` +
