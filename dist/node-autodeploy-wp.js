@@ -178,22 +178,24 @@ var NodeAutodeployWP = function () {
 
     /**
      * Runs the rsync command.
-     * @param  {string} gitBranch The current Git branch.
+     * @param  {string} serverConfig The server config for this git branch.
      */
 
   }, {
     key: 'rsyncToServer',
     value: function rsyncToServer() {
-      var gitBranch = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.gitBranch;
+      var serverConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfig[this.gitBranch];
 
-      var args = ['--perms', '--chmod=Du+rwx', '-arv', ['--delete']];
+      var args = ['--perms', '--chmod=Du+rwx', '-arv', '--delete'];
       if (this.deployConfig.exclude) {
         args = args.concat(this.deployConfig.exclude.map(function (glob) {
           return '--exclude=' + glob;
         }));
       }
 
-      var command = 'rsync ' + args.join(' ') + ' ' + this.serverConfig[gitBranch].srcPath + ' ' + ('' + this.serverConfig[gitBranch].username) + ('@' + this.serverConfig[gitBranch].server) + (':' + this.serverConfig[gitBranch].destPath);
+      args = args.join(' ');
+
+      var command = 'rsync ' + args + ' ' + serverConfig.srcPath + ' ' + ('' + serverConfig.username) + ('@' + serverConfig.server + ':' + serverConfig.destPath);
 
       console.log(command);
 
