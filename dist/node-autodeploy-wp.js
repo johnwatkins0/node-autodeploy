@@ -177,6 +177,26 @@ var NodeAutodeployWP = function () {
     }
 
     /**
+     * Make a string of default rsync args.
+     * @param  {Array}  args Default args.
+     * @return {String} The string of default args plus any additional ones.
+     */
+
+  }, {
+    key: 'makeRsyncArgs',
+    value: function makeRsyncArgs() {
+      var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['--perms', '--chmod=Du+rwx', '-arv', '--delete'];
+
+      if (this.deployConfig.exclude) {
+        return args.concat(this.deployConfig.exclude.map(function (glob) {
+          return '--exclude=' + glob;
+        })).join(' ');
+      }
+
+      return args.join(' ');
+    }
+
+    /**
      * Runs the rsync command.
      * @param  {string} serverConfig The server config for this git branch.
      */
@@ -186,14 +206,7 @@ var NodeAutodeployWP = function () {
     value: function rsyncToServer() {
       var serverConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfig[this.gitBranch];
 
-      var args = ['--perms', '--chmod=Du+rwx', '-arv', '--delete'];
-      if (this.deployConfig.exclude) {
-        args = args.concat(this.deployConfig.exclude.map(function (glob) {
-          return '--exclude=' + glob;
-        }));
-      }
-
-      args = args.join(' ');
+      var args = this.makeRsyncArgs();
 
       var command = 'rsync ' + args + ' ' + serverConfig.srcPath + ' ' + ('' + serverConfig.username) + ('@' + serverConfig.server + ':' + serverConfig.destPath);
 

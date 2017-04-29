@@ -153,18 +153,26 @@ export default class NodeAutodeployWP {
   }
 
   /**
+   * Make a string of default rsync args.
+   * @param  {Array}  args Default args.
+   * @return {String} The string of default args plus any additional ones.
+   */
+  makeRsyncArgs(args = ['--perms', '--chmod=Du+rwx', '-arv', '--delete']) {
+    if (this.deployConfig.exclude) {
+      return args
+        .concat(this.deployConfig.exclude.map((glob) => `--exclude=${glob}`))
+        .join(' ');
+    }
+
+    return args.join(' ');
+  }
+
+  /**
    * Runs the rsync command.
    * @param  {string} serverConfig The server config for this git branch.
    */
   rsyncToServer(serverConfig = this.serverConfig[this.gitBranch]) {
-    let args = ['--perms', '--chmod=Du+rwx', '-arv', '--delete'];
-    if (this.deployConfig.exclude) {
-      args = args.concat(
-        this.deployConfig.exclude.map((glob) => `--exclude=${glob}`)
-      );
-    }
-
-    args = args.join(' ');
+    const args = this.makeRsyncArgs();
 
     const command = `rsync ${args} ${serverConfig.srcPath} ` +
       `${serverConfig.username}` +
