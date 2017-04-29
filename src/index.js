@@ -133,19 +133,19 @@ class NodeAutodeployWP {
         throw new Error(`exec error: ${error}`);
       }
 
-      const gitBranch = stdout.trim();
+      this.gitBranch = stdout.trim();
 
-      console.log(`The current branch is ${gitBranch}.`);
+      console.log(`The current branch is ${this.gitBranch}.`);
 
       if (
-          gitBranch in this.serverConfig &&
-            this.serverConfig[gitBranch].active === true
+          this.gitBranch in this.serverConfig &&
+            this.serverConfig[this.gitBranch].active === true
         ) {
-        console.log(`Deploying to ${gitBranch} ...`);
-        this.rsyncToServer(this.serverConfig[gitBranch], this.deployConfig);
+        console.log(`Deploying to ${this.gitBranch} ...`);
+        this.rsyncToServer();
       } else {
         console.log(
-            `Not deploying to ${gitBranch}. It's not in .deploy-servers.js`
+            `Not deploying to ${this.gitBranch}. It's not in .deploy-servers.js`
           );
       }
     });
@@ -153,17 +153,24 @@ class NodeAutodeployWP {
 
   /**
    * Runs the rsync command.
+   * @param  {string} gitBranch The current Git branch.
    */
-  rsyncToServer() {
-    let args = ['--perms', '--chmod=Du+rwx', '-arv'];
+  rsyncToServer(gitBranch = this.gitBranch) {
+    let args = ['--perms', '--chmod=Du+rwx', '-arv', ['--delete']];
     if (this.deployConfig.exclude) {
       args = args.concat(
         this.deployConfig.exclude.map((glob) => `--exclude=${glob}`)
       );
     }
 
-    const command = `rsync ${args.join(' ')} ${this.server.srcPath} ` +
-      `${this.server.username}@${this.server.server}:${this.server.destPath}`;
+    console.log('server', this.serverConfig[gitBranch]);
+
+    const command = `rsync ${args.join(
+      ' '
+    )} ${this.serverConfig[gitBranch].srcPath} ` +
+      `${this.serverConfig[gitBranch].username}` +
+      `@${this.serverConfig[gitBranch].server}` +
+      `:${this.serverConfig[gitBranch].destPath}`;
 
     console.log(command);
 
@@ -183,7 +190,7 @@ class NodeAutodeployWP {
 export default function run() {
   const nodeAutodeploy = new NodeAutodeployWP();
 
-  if (nodeAutodeploy.isvalid()) {
+  if (nodeAutodeploy.isValid()) {
     nodeAutodeploy.run();
   }
 }

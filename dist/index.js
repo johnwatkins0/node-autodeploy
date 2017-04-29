@@ -164,34 +164,39 @@ var NodeAutodeployWP = function () {
           throw new Error('exec error: ' + error);
         }
 
-        var gitBranch = stdout.trim();
+        _this.gitBranch = stdout.trim();
 
-        console.log('The current branch is ' + gitBranch + '.');
+        console.log('The current branch is ' + _this.gitBranch + '.');
 
-        if (gitBranch in _this.serverConfig && _this.serverConfig[gitBranch].active === true) {
-          console.log('Deploying to ' + gitBranch + ' ...');
-          _this.rsyncToServer(_this.serverConfig[gitBranch], _this.deployConfig);
+        if (_this.gitBranch in _this.serverConfig && _this.serverConfig[_this.gitBranch].active === true) {
+          console.log('Deploying to ' + _this.gitBranch + ' ...');
+          _this.rsyncToServer();
         } else {
-          console.log('Not deploying to ' + gitBranch + '. It\'s not in .deploy-servers.js');
+          console.log('Not deploying to ' + _this.gitBranch + '. It\'s not in .deploy-servers.js');
         }
       });
     }
 
     /**
      * Runs the rsync command.
+     * @param  {string} gitBranch The current Git branch.
      */
 
   }, {
     key: 'rsyncToServer',
     value: function rsyncToServer() {
-      var args = ['--perms', '--chmod=Du+rwx', '-arv'];
+      var gitBranch = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.gitBranch;
+
+      var args = ['--perms', '--chmod=Du+rwx', '-arv', ['--delete']];
       if (this.deployConfig.exclude) {
         args = args.concat(this.deployConfig.exclude.map(function (glob) {
           return '--exclude=' + glob;
         }));
       }
 
-      var command = 'rsync ' + args.join(' ') + ' ' + this.server.srcPath + ' ' + (this.server.username + '@' + this.server.server + ':' + this.server.destPath);
+      console.log('server', this.serverConfig[gitBranch]);
+
+      var command = 'rsync ' + args.join(' ') + ' ' + this.serverConfig[gitBranch].srcPath + ' ' + ('' + this.serverConfig[gitBranch].username) + ('@' + this.serverConfig[gitBranch].server) + (':' + this.serverConfig[gitBranch].destPath);
 
       console.log(command);
 
@@ -216,7 +221,7 @@ var NodeAutodeployWP = function () {
 function run() {
   var nodeAutodeploy = new NodeAutodeployWP();
 
-  if (nodeAutodeploy.isvalid()) {
+  if (nodeAutodeploy.isValid()) {
     nodeAutodeploy.run();
   }
 }
