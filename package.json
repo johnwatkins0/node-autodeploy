@@ -4,8 +4,6 @@
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
   "main": "dist/index.js",
   "scripts": {
-    "install": "node ./bin/install.js",
-    "uninstall": "node ./bin/uninstall.js",
     "prepush": "if [ \"$(git branch)\" == \"* master\" ]; then npm version patch && npm publish; fi"
   },
   "repository": {
