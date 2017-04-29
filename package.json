@@ -1,6 +1,6 @@
 {
   "name": "node-autodeploy-wp",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
   "scripts": {
     "prepush": "if [ \"$(git branch)\" == \"* master\" ]; then npm version patch && npm publish; fi"
