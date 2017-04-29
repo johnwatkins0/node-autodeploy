@@ -1,11 +1,13 @@
-/* eslint import/no-dynamic-require: 0*/
+/*
+eslint global-require: 0
+import/no-dynamic-require: 0
+*/
 
 import { exec } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 
-const servers = require(`${process.env.PWD}/.deploy-servers.js`);
-const settings = require(`${process.env.PWD}/.deploy-settings.js`);
-
-const commandOptions = {
+const execCommandOptions = {
   encoding: 'utf8',
   timeout: 0,
   maxBuffer: 200 * 1024,
@@ -14,50 +16,174 @@ const commandOptions = {
   env: null,
 };
 
-function rsyncToServer(server) {
-  let args = ['--perms', '--chmod=Du+rwx', '-arv'];
-  if (settings.exclude) {
-    args = args.concat(
-      settings.exclude.map(excludeGlob => `--exclude=${excludeGlob}`),
-    );
+/**
+ * Validate settings and run deployment.
+ */
+class NodeAutodeployWP {
+  /**
+   * Declare starting class variables.
+   * @param {string} rootPath The path to the project root.
+   */
+  constructor(rootPath = process.env.PWD) {
+    this.serverConfigPath = path.resolve(rootPath, '.deploy-servers.js');
+    this.deploySettingsPath = path.resolve(rootPath, '.deploy-settings.js');
   }
 
-  const command = `rsync ${args.join(' ')} ${server.srcPath} ` +
-    `${server.username}@${server.server}:${server.destPath}`;
-
-  console.log(command);
-
-  exec(command, commandOptions, (error, stdout) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return;
+  /**
+   * Validates configuration files.
+   * @return {Boolean} True if it's okay to run the deployment.
+   */
+  isValid() {
+    if (this.configFilesExist() !== true) {
+      return false;
     }
 
-    console.log(`${stdout}`);
-  });
+    this.bootstrapConfigSettings();
+
+    if (this.configSettingsAreValid() !== true) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Confirms that the config files actually exist.
+   * @param  {string} serverConfigPath Path to the server configuration file.
+   * @param  {string} deploySettingsPath Path to the deploy settings file.
+   * @return {Boolean|Error} True if the files exist.
+   */
+  configFilesExist(
+    serverConfigPath = this.serverConfigPath,
+    deploySettingsPath = this.deploySettingsPath
+  ) {
+    if (fs.existsSync(serverConfigPath) === false) {
+      throw new Error(
+        'No deploy server settings found in project. ' +
+          'Create .deploy-servers.js. ' +
+          'More: https://github.com/johnwatkins0/node-autodeploy-wp'
+      );
+    }
+
+    if (fs.existsSync(deploySettingsPath) === false) {
+      throw new Error(
+        'No deploy server settings found in project. ' +
+          'Create .deploy-settings.js. ' +
+          'More: https://github.com/johnwatkins0/node-autodeploy-wp'
+      );
+    }
+
+    return true;
+  }
+
+  /**
+   * Loads the configuration files.
+   * @param  {string} serverConfigPath Path to the server configuration file.
+   * @param  {string} deploySettingsPath Path to the deploy settings file.
+   */
+  bootstrapConfigSettings(
+    serverConfigPath = this.serverConfigPath,
+    deploySettingsPath = this.deploySettingsPath
+  ) {
+    this.serverConfig = require(this.serverConfigPath);
+    this.deployConfig = require(this.deploySettingsPath);
+  }
+
+  /**
+   * Confirms the config files have the necessary data.
+   * @param  {string} serverConfig Data from the server configuration file.
+   * @param  {string} deployConfig Data from the deploy configuration file.
+   * @return {Boolean|error} True if they are valid.
+   */
+  configSettingsAreValid(
+    serverConfig = this.serverConfig,
+    deployConfig = this.deployConfig
+  ) {
+    if (typeof serverConfig !== 'object') {
+      throw new Error(
+        '.deploy-servers.js is invalid. It must export an object.'
+      );
+    }
+
+    if (typeof deployConfig !== 'object') {
+      throw new Error(
+        '.deploy-settings.js is invalid. It must export an object.'
+      );
+    }
+
+    return true;
+  }
+
+  /**
+   * Assuming configs are valid, runs the script.
+   */
+  run() {
+    this.maybeDeploy();
+  }
+
+  /**
+   * Deploys if the current branch is in the config.
+   */
+  maybeDeploy() {
+    exec('git rev-parse --abbrev-ref HEAD', execCommandOptions, (
+      error,
+      stdout
+    ) => {
+      if (error) {
+        throw new Error(`exec error: ${error}`);
+      }
+
+      const gitBranch = stdout.trim();
+
+      console.log(`The current branch is ${gitBranch}.`);
+
+      if (
+          gitBranch in this.serverConfig &&
+            this.serverConfig[gitBranch].active === true
+        ) {
+        console.log(`Deploying to ${gitBranch} ...`);
+        this.rsyncToServer(this.serverConfig[gitBranch], this.deployConfig);
+      } else {
+        console.log(
+            `Not deploying to ${gitBranch}. It's not in .deploy-servers.js`
+          );
+      }
+    });
+  }
+
+  /**
+   * Runs the rsync command.
+   */
+  rsyncToServer() {
+    let args = ['--perms', '--chmod=Du+rwx', '-arv'];
+    if (this.deployConfig.exclude) {
+      args = args.concat(
+        this.deployConfig.exclude.map((glob) => `--exclude=${glob}`)
+      );
+    }
+
+    const command = `rsync ${args.join(' ')} ${this.server.srcPath} ` +
+      `${this.server.username}@${this.server.server}:${this.server.destPath}`;
+
+    console.log(command);
+
+    exec(command, execCommandOptions, (error, stdout) => {
+      if (error) {
+        throw new Error(`exec error: ${error}`);
+      }
+
+      console.log(`${stdout}`);
+    });
+  }
 }
 
-function maybeDeploy() {
-  const branchCommand = 'git rev-parse --abbrev-ref HEAD';
-
-  exec(branchCommand, commandOptions, (error, stdout) => {
-    if (error) {
-      throw new Error(`exec error: ${error}`);
-    }
-
-    const branch = stdout.trim();
-
-    console.log(`The current branch is ${branch}.`);
-
-    if (branch in servers && servers[branch].active === true) {
-      console.log(`Deploying to ${branch} ...`);
-      rsyncToServer(servers[branch], settings);
-    } else {
-      console.log(`Not deploying to ${branch}.`);
-    }
-  });
-}
-
+/**
+ * Entry point.
+ */
 export default function run() {
-  maybeDeploy();
+  const nodeAutodeploy = new NodeAutodeployWP();
+
+  if (nodeAutodeploy.isvalid()) {
+    nodeAutodeploy.run();
+  }
 }

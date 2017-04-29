@@ -3,15 +3,31 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     eslint global-require: 0
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     import/no-dynamic-require: 0
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */
+
 exports.default = run;
 
 var _child_process = require('child_process');
 
-var servers = require(process.env.PWD + '/.deploy-servers.js'); /* eslint import/no-dynamic-require: 0*/
+var _fs = require('fs');
 
-var settings = require(process.env.PWD + '/.deploy-settings.js');
+var _fs2 = _interopRequireDefault(_fs);
 
-var commandOptions = {
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var execCommandOptions = {
   encoding: 'utf8',
   timeout: 0,
   maxBuffer: 200 * 1024,
@@ -20,49 +36,187 @@ var commandOptions = {
   env: null
 };
 
-function rsyncToServer(server) {
-  var args = ['--perms', '--chmod=Du+rwx', '-arv'];
-  if (settings.exclude) {
-    args = args.concat(settings.exclude.map(function (excludeGlob) {
-      return '--exclude=' + excludeGlob;
-    }));
+/**
+ * Validate settings and run deployment.
+ */
+
+var NodeAutodeployWP = function () {
+  /**
+   * Declare starting class variables.
+   * @param {string} rootPath The path to the project root.
+   */
+  function NodeAutodeployWP() {
+    var rootPath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : process.env.PWD;
+
+    _classCallCheck(this, NodeAutodeployWP);
+
+    this.serverConfigPath = _path2.default.resolve(rootPath, '.deploy-servers.js');
+    this.deploySettingsPath = _path2.default.resolve(rootPath, '.deploy-settings.js');
   }
 
-  var command = 'rsync ' + args.join(' ') + ' ' + server.srcPath + ' ' + (server.username + '@' + server.server + ':' + server.destPath);
+  /**
+   * Validates configuration files.
+   * @return {Boolean} True if it's okay to run the deployment.
+   */
 
-  console.log(command);
 
-  (0, _child_process.exec)(command, commandOptions, function (error, stdout) {
-    if (error) {
-      console.error('exec error: ' + error);
-      return;
+  _createClass(NodeAutodeployWP, [{
+    key: 'isValid',
+    value: function isValid() {
+      if (this.configFilesExist() !== true) {
+        return false;
+      }
+
+      this.bootstrapConfigSettings();
+
+      if (this.configSettingsAreValid() !== true) {
+        return false;
+      }
+
+      return true;
     }
 
-    console.log('' + stdout);
-  });
-}
+    /**
+     * Confirms that the config files actually exist.
+     * @param  {string} serverConfigPath Path to the server configuration file.
+     * @param  {string} deploySettingsPath Path to the deploy settings file.
+     * @return {Boolean|Error} True if the files exist.
+     */
 
-function maybeDeploy() {
-  var branchCommand = 'git rev-parse --abbrev-ref HEAD';
+  }, {
+    key: 'configFilesExist',
+    value: function configFilesExist() {
+      var serverConfigPath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfigPath;
+      var deploySettingsPath = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.deploySettingsPath;
 
-  (0, _child_process.exec)(branchCommand, commandOptions, function (error, stdout) {
-    if (error) {
-      throw new Error('exec error: ' + error);
+      if (_fs2.default.existsSync(serverConfigPath) === false) {
+        throw new Error('No deploy server settings found in project. ' + 'Create .deploy-servers.js. ' + 'More: https://github.com/johnwatkins0/node-autodeploy-wp');
+      }
+
+      if (_fs2.default.existsSync(deploySettingsPath) === false) {
+        throw new Error('No deploy server settings found in project. ' + 'Create .deploy-settings.js. ' + 'More: https://github.com/johnwatkins0/node-autodeploy-wp');
+      }
+
+      return true;
     }
 
-    var branch = stdout.trim();
+    /**
+     * Loads the configuration files.
+     * @param  {string} serverConfigPath Path to the server configuration file.
+     * @param  {string} deploySettingsPath Path to the deploy settings file.
+     */
 
-    console.log('The current branch is ' + branch + '.');
+  }, {
+    key: 'bootstrapConfigSettings',
+    value: function bootstrapConfigSettings() {
+      var serverConfigPath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfigPath;
+      var deploySettingsPath = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.deploySettingsPath;
 
-    if (branch in servers && servers[branch].active === true) {
-      console.log('Deploying to ' + branch + ' ...');
-      rsyncToServer(servers[branch], settings);
-    } else {
-      console.log('Not deploying to ' + branch + '.');
+      this.serverConfig = require(this.serverConfigPath);
+      this.deployConfig = require(this.deploySettingsPath);
     }
-  });
-}
+
+    /**
+     * Confirms the config files have the necessary data.
+     * @param  {string} serverConfig Data from the server configuration file.
+     * @param  {string} deployConfig Data from the deploy configuration file.
+     * @return {Boolean|error} True if they are valid.
+     */
+
+  }, {
+    key: 'configSettingsAreValid',
+    value: function configSettingsAreValid() {
+      var serverConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfig;
+      var deployConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.deployConfig;
+
+      if ((typeof serverConfig === 'undefined' ? 'undefined' : _typeof(serverConfig)) !== 'object') {
+        throw new Error('.deploy-servers.js is invalid. It must export an object.');
+      }
+
+      if ((typeof deployConfig === 'undefined' ? 'undefined' : _typeof(deployConfig)) !== 'object') {
+        throw new Error('.deploy-settings.js is invalid. It must export an object.');
+      }
+
+      return true;
+    }
+
+    /**
+     * Assuming configs are valid, runs the script.
+     */
+
+  }, {
+    key: 'run',
+    value: function run() {
+      this.maybeDeploy();
+    }
+
+    /**
+     * Deploys if the current branch is in the config.
+     */
+
+  }, {
+    key: 'maybeDeploy',
+    value: function maybeDeploy() {
+      var _this = this;
+
+      (0, _child_process.exec)('git rev-parse --abbrev-ref HEAD', execCommandOptions, function (error, stdout) {
+        if (error) {
+          throw new Error('exec error: ' + error);
+        }
+
+        var gitBranch = stdout.trim();
+
+        console.log('The current branch is ' + gitBranch + '.');
+
+        if (gitBranch in _this.serverConfig && _this.serverConfig[gitBranch].active === true) {
+          console.log('Deploying to ' + gitBranch + ' ...');
+          _this.rsyncToServer(_this.serverConfig[gitBranch], _this.deployConfig);
+        } else {
+          console.log('Not deploying to ' + gitBranch + '. It\'s not in .deploy-servers.js');
+        }
+      });
+    }
+
+    /**
+     * Runs the rsync command.
+     */
+
+  }, {
+    key: 'rsyncToServer',
+    value: function rsyncToServer() {
+      var args = ['--perms', '--chmod=Du+rwx', '-arv'];
+      if (this.deployConfig.exclude) {
+        args = args.concat(this.deployConfig.exclude.map(function (glob) {
+          return '--exclude=' + glob;
+        }));
+      }
+
+      var command = 'rsync ' + args.join(' ') + ' ' + this.server.srcPath + ' ' + (this.server.username + '@' + this.server.server + ':' + this.server.destPath);
+
+      console.log(command);
+
+      (0, _child_process.exec)(command, execCommandOptions, function (error, stdout) {
+        if (error) {
+          throw new Error('exec error: ' + error);
+        }
+
+        console.log('' + stdout);
+      });
+    }
+  }]);
+
+  return NodeAutodeployWP;
+}();
+
+/**
+ * Entry point.
+ */
+
 
 function run() {
-  maybeDeploy();
+  var nodeAutodeploy = new NodeAutodeployWP();
+
+  if (nodeAutodeploy.isvalid()) {
+    nodeAutodeploy.run();
+  }
 }

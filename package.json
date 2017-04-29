@@ -43,5 +43,8 @@
     "node-fs-extra": "^0.8.2",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.7.1"
   }
 }
