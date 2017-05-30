@@ -1,7 +1,13 @@
 module.exports = {
   env: { es6: true },
   extends: [ 'eslint:recommended', 'airbnb', 'google' ],
-  globals: { process: true, console: true, require: true },
+  globals: {
+    process: true,
+    console: true,
+    require: true,
+    test: true,
+    expect: true
+  },
   parserOptions: {
     ecmaFeatures: { experimentalObjectRestSpread: true, jsx: true },
     sourceType: 'module'

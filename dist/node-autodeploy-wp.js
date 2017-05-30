@@ -185,7 +185,7 @@ var NodeAutodeployWP = function () {
   }, {
     key: 'makeRsyncArgs',
     value: function makeRsyncArgs() {
-      var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['--perms', '--chmod=Du+rwx', '-arv', '--delete'];
+      var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['--perms', '--chmod=Du+rwx', '-arv', '--delete', '--copy-links'];
 
       if (this.deployConfig.exclude) {
         return args.concat(this.deployConfig.exclude.map(function (glob) {

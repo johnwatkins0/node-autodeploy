@@ -125,31 +125,32 @@ export default class NodeAutodeployWP {
    * Deploys if the current branch is in the config.
    */
   maybeDeploy() {
-    exec('git rev-parse --abbrev-ref HEAD', execCommandOptions, (
-      error,
-      stdout
-    ) => {
-      if (error) {
-        throw new Error(`exec error: ${error}`);
-      }
+    exec(
+      'git rev-parse --abbrev-ref HEAD',
+      execCommandOptions,
+      (error, stdout) => {
+        if (error) {
+          throw new Error(`exec error: ${error}`);
+        }
 
-      this.gitBranch = stdout.trim();
+        this.gitBranch = stdout.trim();
 
-      console.log(`The current branch is ${this.gitBranch}.`);
+        console.log(`The current branch is ${this.gitBranch}.`);
 
-      if (
+        if (
           this.gitBranch in this.serverConfig &&
-            this.serverConfig[this.gitBranch].active === true
+          this.serverConfig[this.gitBranch].active === true
         ) {
-        console.log(`Deploying to ${this.gitBranch} ...`);
+          console.log(`Deploying to ${this.gitBranch} ...`);
 
-        this.rsyncToServer();
-      } else {
-        console.log(
+          this.rsyncToServer();
+        } else {
+          console.log(
             `Not deploying to ${this.gitBranch}. It's not in .deploy-servers.js`
           );
+        }
       }
-    });
+    );
   }
 
   /**
@@ -157,7 +158,9 @@ export default class NodeAutodeployWP {
    * @param  {Array}  args Default args.
    * @return {String} The string of default args plus any additional ones.
    */
-  makeRsyncArgs(args = ['--perms', '--chmod=Du+rwx', '-arv', '--delete']) {
+  makeRsyncArgs(
+    args = ['--perms', '--chmod=Du+rwx', '-arv', '--delete', '--copy-links']
+  ) {
     if (this.deployConfig.exclude) {
       return args
         .concat(this.deployConfig.exclude.map((glob) => `--exclude=${glob}`))
@@ -174,7 +177,8 @@ export default class NodeAutodeployWP {
   rsyncToServer(serverConfig = this.serverConfig[this.gitBranch]) {
     const args = this.makeRsyncArgs();
 
-    const command = `rsync ${args} ${serverConfig.srcPath} ` +
+    const command =
+      `rsync ${args} ${serverConfig.srcPath} ` +
       `${serverConfig.username}` +
       `@${serverConfig.server}:${serverConfig.destPath}`;
 
