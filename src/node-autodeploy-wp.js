@@ -162,9 +162,13 @@ export default class NodeAutodeployWP {
     args = ['--perms', '--chmod=Du+rwx', '-arv', '--delete', '--copy-links']
   ) {
     if (this.deployConfig.exclude) {
-      return args
-        .concat(this.deployConfig.exclude.map((glob) => `--exclude=${glob}`))
-        .join(' ');
+      args = args.concat(
+        this.deployConfig.exclude.map((glob) => `--exclude=${glob}`)
+      );
+    }
+
+    if (this.deployConfig.port) {
+      args = args.concat(`"ssh -p ${this.deployConfig.port}"`);
     }
 
     return args.join(' ');

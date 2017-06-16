@@ -47,11 +47,12 @@ The following settings are required in each settings object:
 
 ### .deploy-settings.js
 
-Create a settings config file, `.deploy-settings.js` in the project root. This provides another JavaSript settings object to determine the behavior of the `rsync` command run by the script. Currently one field is supported:
+Create a settings config file, `.deploy-settings.js` in the project root. This provides another JavaSript settings object to determine the behavior of the `rsync` command run by the script.
 
 | Key | Type | Description |
 |---|---|---|
 | exclude | array | An array of glob strings representing files and folders that shouldn't be synced to the server. |
+| port | number | The port number through which to sink to the remove server.
 
 Example:
 
@@ -66,7 +67,8 @@ module.exports = {
     'tests',
     '.eslintrc',
     'node_modules/'
-  ]
+  ],
+	port: 22
 };
 ```
 
