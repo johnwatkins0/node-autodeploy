@@ -38,7 +38,7 @@ Each object key should be identical to the name of the Git branch you want to as
 ### Settings
 
 | Key | Type | Description | Optional? |
-|---|---|---|
+|---|---|---|---|
 | active | bool | If set to false, the deployment will never run. | required |
 | server | string | The server hostname. | required |
 | destPath | string | The absolute path to the project's destination on the server | required |
