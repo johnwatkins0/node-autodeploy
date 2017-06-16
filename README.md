@@ -35,15 +35,16 @@ module.exports = {
 
 Each object key should be identical to the name of the Git branch you want to associate with the server. In the example above, the `staging` deployment will run if the current Git branch is `staging`.
 
-The following settings are required in each settings object:
+### Settings
 
-| Key | Type | Description |
+| Key | Type | Description | Optional? |
 |---|---|---|
-| active | bool | If set to false, the deployment will never run. |
-| server | string | The server hostname. |
-| destPath | string | The absolute path to the project's destination on the server |
-| username | string | A user with permissions to write to the destination directory on the server. |
-| srcPath | string | The absolute path to the source directory. |
+| active | bool | If set to false, the deployment will never run. | required |
+| server | string | The server hostname. | required |
+| destPath | string | The absolute path to the project's destination on the server | required |
+| username | string | A user with permissions to write to the destination directory on the server. | required |
+| srcPath | string | The absolute path to the source directory. | required |
+| port | number | The port number through which to sink to the remove server. | not required |
 
 ### .deploy-settings.js
 
@@ -52,7 +53,6 @@ Create a settings config file, `.deploy-settings.js` in the project root. This p
 | Key | Type | Description |
 |---|---|---|
 | exclude | array | An array of glob strings representing files and folders that shouldn't be synced to the server. |
-| port | number | The port number through which to sink to the remove server.
 
 Example:
 

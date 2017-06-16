@@ -167,10 +167,6 @@ export default class NodeAutodeployWP {
       );
     }
 
-    if (this.deployConfig.port) {
-      args = args.concat(`"ssh -p ${this.deployConfig.port}"`);
-    }
-
     return args.join(' ');
   }
 
@@ -181,10 +177,12 @@ export default class NodeAutodeployWP {
   rsyncToServer(serverConfig = this.serverConfig[this.gitBranch]) {
     const args = this.makeRsyncArgs();
 
-    const command =
-      `rsync ${args} ${serverConfig.srcPath} ` +
-      `${serverConfig.username}` +
-      `@${serverConfig.server}:${serverConfig.destPath}`;
+    const command = `rsync ${args} ${serverConfig.port}`
+      ? `"ssh -p ${serverConfig.port}"`
+      : `${'' +
+          `${serverConfig.srcPath} `
+          }${serverConfig.username
+          }@${serverConfig.server}:${serverConfig.destPath}`;
 
     console.log(command);
 
