@@ -1,6 +1,6 @@
 {
   "name": "node-autodeploy-wp",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
   "scripts": {
     "test": "node ./node_modules/jest/bin/jest",
