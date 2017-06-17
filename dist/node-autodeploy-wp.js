@@ -188,9 +188,9 @@ var NodeAutodeployWP = function () {
       var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['--perms', '--chmod=Du+rwx', '-arv', '--delete', '--copy-links'];
 
       if (this.deployConfig.exclude) {
-        return args.concat(this.deployConfig.exclude.map(function (glob) {
+        args = args.concat(this.deployConfig.exclude.map(function (glob) {
           return '--exclude=' + glob;
-        })).join(' ');
+        }));
       }
 
       return args.join(' ');
@@ -207,8 +207,9 @@ var NodeAutodeployWP = function () {
       var serverConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfig[this.gitBranch];
 
       var args = this.makeRsyncArgs();
+      console.log(serverConfig);
 
-      var command = 'rsync ' + args + ' ' + serverConfig.srcPath + ' ' + ('' + serverConfig.username) + ('@' + serverConfig.server + ':' + serverConfig.destPath);
+      var command = 'rsync ' + args + ' ' + (serverConfig.port ? '-e "ssh -p ' + serverConfig.port + '" ' : '') + serverConfig.srcPath + ' ' + serverConfig.username + '@' + serverConfig.server + ':' + serverConfig.destPath;
 
       console.log(command);
 
