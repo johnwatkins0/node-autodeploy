@@ -10,7 +10,7 @@ import path from 'path';
 const execCommandOptions = {
   encoding: 'utf8',
   timeout: 0,
-  maxBuffer: 200 * 1024,
+  maxBuffer: 20000 * 1024,
   killSignal: 'SIGTERM',
   cwd: process.env.PWD,
   env: null,
@@ -155,12 +155,26 @@ export default class NodeAutodeployWP {
 
   /**
    * Make a string of default rsync args.
-   * @param  {Array}  args Default args.
+   * @param  {Array}  defaultArgs Default args.
    * @return {String} The string of default args plus any additional ones.
    */
   makeRsyncArgs(
-    args = ['--perms', '--chmod=Du+rwx', '-arv', '--delete', '--copy-links']
+    defaultArgs = [
+      '--perms',
+      '--chmod=Du+rwx',
+      '-arv',
+      '--delete',
+      '--copy-links',
+    ]
   ) {
+    let args = defaultArgs.map((arg) => arg);
+
+    if (this.deployConfig.include) {
+      args = args.concat(
+        this.deployConfig.include.map((glob) => `--include=${glob}`)
+      );
+    }
+
     if (this.deployConfig.exclude) {
       args = args.concat(
         this.deployConfig.exclude.map((glob) => `--exclude=${glob}`)
@@ -176,7 +190,6 @@ export default class NodeAutodeployWP {
    */
   rsyncToServer(serverConfig = this.serverConfig[this.gitBranch]) {
     const args = this.makeRsyncArgs();
-    console.log(serverConfig);
 
     const command = `rsync ${args} ${serverConfig.port
       ? `-e "ssh -p ${serverConfig.port}" `

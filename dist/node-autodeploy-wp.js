@@ -28,7 +28,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var execCommandOptions = {
   encoding: 'utf8',
   timeout: 0,
-  maxBuffer: 200 * 1024,
+  maxBuffer: 20000 * 1024,
   killSignal: 'SIGTERM',
   cwd: process.env.PWD,
   env: null
@@ -178,14 +178,24 @@ var NodeAutodeployWP = function () {
 
     /**
      * Make a string of default rsync args.
-     * @param  {Array}  args Default args.
+     * @param  {Array}  defaultArgs Default args.
      * @return {String} The string of default args plus any additional ones.
      */
 
   }, {
     key: 'makeRsyncArgs',
     value: function makeRsyncArgs() {
-      var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['--perms', '--chmod=Du+rwx', '-arv', '--delete', '--copy-links'];
+      var defaultArgs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['--perms', '--chmod=Du+rwx', '-arv', '--delete', '--copy-links'];
+
+      var args = defaultArgs.map(function (arg) {
+        return arg;
+      });
+
+      if (this.deployConfig.include) {
+        args = args.concat(this.deployConfig.include.map(function (glob) {
+          return '--include=' + glob;
+        }));
+      }
 
       if (this.deployConfig.exclude) {
         args = args.concat(this.deployConfig.exclude.map(function (glob) {
@@ -207,7 +217,6 @@ var NodeAutodeployWP = function () {
       var serverConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfig[this.gitBranch];
 
       var args = this.makeRsyncArgs();
-      console.log(serverConfig);
 
       var command = 'rsync ' + args + ' ' + (serverConfig.port ? '-e "ssh -p ' + serverConfig.port + '" ' : '') + serverConfig.srcPath + ' ' + serverConfig.username + '@' + serverConfig.server + ':' + serverConfig.destPath;
 
