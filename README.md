@@ -29,6 +29,7 @@ module.exports = {
     destPath: '/path/on/the/server/',
     username: 'username',
     srcPath: `${__dirname}/`
+    port: 22
   }
 };
 ```
@@ -68,7 +69,6 @@ module.exports = {
     '.eslintrc',
     'node_modules/'
   ],
-	port: 22
 };
 ```
 
