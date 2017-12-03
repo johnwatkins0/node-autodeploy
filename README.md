@@ -1,6 +1,6 @@
 # node-autodeploy-wp
 
-Associate branches of a Git project with remote servers.
+Associate branches of a Git project with remote servers. Auto-sync your repository to the remote server over SSH. Useful for developers working with servers they have minimal control over.
 
 ## Installation
 
