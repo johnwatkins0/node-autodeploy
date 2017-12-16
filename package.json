@@ -1,11 +1,10 @@
 {
   "name": "node-autodeploy-wp",
   "version": "1.0.20",
-  "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
+  "description":
+    "Deploy a project to a remote server when it's pushed to GitHub. ",
   "scripts": {
-    "test": "node ./node_modules/jest/bin/jest",
-    "precommit": "npm run test",
-    "prepush": "if [ \"$(git branch)\" == \"* master\" ]; then npm version patch && npm publish; fi"
+    "test": "node ./node_modules/jest/bin/jest"
   },
   "repository": {
     "type": "git",
@@ -36,9 +35,6 @@
   },
   "jest": {
     "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.js",
-      "!src/index.js"
-    ]
+    "collectCoverageFrom": ["src/**/*.js", "!src/index.js"]
   }
 }
