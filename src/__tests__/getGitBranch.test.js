@@ -7,10 +7,12 @@ describe('getGitBranch function', () => {
     expect(gitBranch).toBe('my-branch');
   });
 
-  it('resolves the correct branch (assumed to be master)', async () => {
-    global.GIT_BRANCH = null;
+  it('resolves the correct branch (assumed to be HEAD for testing)', async () => {
+    const branch = global.GIT_BRANCH;
+    global.GIT_BRANCH = 'HEAD';
     const gitBranch = await getGitBranch();
-    expect(gitBranch).toBe('master');
+    expect(gitBranch).toBe('HEAD');
+    global.GIT_BRANCH = branch;
   });
 
   it('rejects with a bad command', async () => {

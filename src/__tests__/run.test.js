@@ -6,8 +6,11 @@ const { serverConfig } = global;
 
 describe('run function', () => {
   it('handles deployment', async () => {
+    const branch = global.GIT_BRANCH;
+    global.GIT_BRANCH = 'HEAD';
     const message = await run();
-    expect(message).toMatch(/The current branch is master./);
+    expect(message).toMatch(/The current branch is HEAD./);
+    global.GIT_BRANCH = branch;
   });
 
   it('handles config objects in global scope', async () => {
@@ -23,6 +26,8 @@ describe('run function', () => {
   });
 
   it('handles when config objects are not in global scope', async () => {
+    const branch = global.GIT_BRANCH;
+    global.GIT_BRANCH = 'HEAD';
     const { serverConfig: originalServerConfig, deployConfig } = global;
     const savedServerConfig = { ...originalServerConfig };
     const savedDeployConfig = { ...deployConfig };
@@ -31,10 +36,11 @@ describe('run function', () => {
 
     COMMAND_DEFAULTS.timeout = 2000;
     const message = await run(path.resolve(__dirname, './valid-directory'));
-    expect(message).toMatch(/The current branch is master./);
+    expect(message).toMatch(/The current branch is HEAD./);
     COMMAND_DEFAULTS.timeout = 0;
     global.serverConfig = savedServerConfig;
     global.deployConfig = savedDeployConfig;
+    global.GIT_BRANCH = branch;
   });
 
   it('handles existing files with invalid data', async () => {
