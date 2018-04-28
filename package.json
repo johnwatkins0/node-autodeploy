@@ -6,6 +6,8 @@
     "autodeploy": "."
   },
   "scripts": {
+    "build": "babel src --out-dir dist",
+    "prepare": "npm run build",
     "start": "babel src --out-dir dist --watch",
     "lint": "eslint src/",
     "test": "yarn lint && jest"
