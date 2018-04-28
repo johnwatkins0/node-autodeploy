@@ -1,1 +1,3 @@
-require('./dist').default();
+require('./dist').run().then((message) => {
+  console.log(message);
+});

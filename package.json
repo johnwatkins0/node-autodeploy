@@ -6,9 +6,9 @@
     "autodeploy": "."
   },
   "scripts": {
-    "build": "babel src --out-dir dist",
+    "build": "babel src --out-dir dist --ignore __tests__",
     "prepare": "npm run build",
-    "start": "babel src --out-dir dist --watch",
+    "start": "babel src --out-dir dist --watch  --ignore __tests__",
     "lint": "eslint src/",
     "test": "yarn lint && jest"
   },
@@ -27,7 +27,9 @@
     "url": "https://github.com/johnwatkins0/node-autodeploy/issues"
   },
   "homepage": "https://github.com/johnwatkins0/node-autodeploy#readme",
-  "dependencies": {},
+  "dependencies": {
+    "prompt": "^1.0.0"
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
@@ -35,14 +37,9 @@
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jest": "^21.15.1",
     "husky": "^1.0.0-rc.2",
+    "intercept-stdout": "^0.1.2",
     "jest": "^22.4.3"
-  },
-  "jest": {
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.js",
-      "!src/index.js"
-    ]
   }
 }

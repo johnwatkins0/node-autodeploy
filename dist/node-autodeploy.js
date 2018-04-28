@@ -3,236 +3,69 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     eslint global-require: 0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     import/no-dynamic-require: 0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */
-
-var _child_process = require('child_process');
-
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
+exports.run = undefined;
 
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _ = require('.');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; } /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                           eslint global-require: 0
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                           import/no-dynamic-require: 0
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */
 
-var execCommandOptions = {
-  encoding: 'utf8',
-  timeout: 0,
-  maxBuffer: 20000 * 1024,
-  killSignal: 'SIGTERM',
-  cwd: process.env.PWD,
-  env: null
-};
 
-/**
- * Validate settings and run deployment.
- */
-
-var NodeAutodeployWP = function () {
-  /**
-   * Declare starting class variables.
-   * @param {string} rootPath The path to the project root.
-   */
-  function NodeAutodeployWP() {
+var run = exports.run = function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
     var rootPath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : process.env.PWD;
+    var serverConfigPath, deployConfigPath, serverConfig, deployConfig, message;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            serverConfigPath = _path2.default.resolve(rootPath, '.deploy-servers.js');
+            deployConfigPath = _path2.default.resolve(rootPath, '.deploy-settings.js');
 
-    _classCallCheck(this, NodeAutodeployWP);
+            if (!((0, _.configFilesExist)(serverConfigPath, deployConfigPath) !== true)) {
+              _context.next = 4;
+              break;
+            }
 
-    this.serverConfigPath = _path2.default.resolve(rootPath, '.deploy-servers.js');
-    this.deploySettingsPath = _path2.default.resolve(rootPath, '.deploy-settings.js');
-  }
+            return _context.abrupt('return');
 
-  /**
-   * Validates configuration files.
-   * @return {Boolean} True if it's okay to run the deployment.
-   */
+          case 4:
+            serverConfig = require(serverConfigPath);
+            deployConfig = require(deployConfigPath);
 
+            if (!((0, _.configSettingsAreValid)(serverConfig, deployConfig) !== true)) {
+              _context.next = 8;
+              break;
+            }
 
-  _createClass(NodeAutodeployWP, [{
-    key: 'isValid',
-    value: function isValid() {
-      if (this.configFilesExist() !== true) {
-        return false;
-      }
+            return _context.abrupt('return');
 
-      this.bootstrapConfigSettings();
+          case 8:
+            _context.next = 10;
+            return (0, _.maybeDeploy)(undefined.serverConfig, undefined.deployConfig);
 
-      if (this.configSettingsAreValid() !== true) {
-        return false;
-      }
+          case 10:
+            message = _context.sent;
 
-      return true;
-    }
+            console.log(message);
 
-    /**
-     * Confirms that the config files actually exist.
-     * @param  {string} serverConfigPath Path to the server configuration file.
-     * @param  {string} deploySettingsPath Path to the deploy settings file.
-     * @return {Boolean|Error} True if the files exist.
-     */
-
-  }, {
-    key: 'configFilesExist',
-    value: function configFilesExist() {
-      var serverConfigPath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfigPath;
-      var deploySettingsPath = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.deploySettingsPath;
-
-      if (_fs2.default.existsSync(serverConfigPath) === false) {
-        throw new Error('No deploy server settings found in project. ' + 'Create .deploy-servers.js. ' + 'More: https://github.com/johnwatkins0/node-autodeploy');
-      }
-
-      if (_fs2.default.existsSync(deploySettingsPath) === false) {
-        throw new Error('No deploy server settings found in project. ' + 'Create .deploy-settings.js. ' + 'More: https://github.com/johnwatkins0/node-autodeploy');
-      }
-
-      return true;
-    }
-
-    /**
-     * Loads the configuration files.
-     * @param  {string} serverConfigPath Path to the server configuration file.
-     * @param  {string} deploySettingsPath Path to the deploy settings file.
-     */
-
-  }, {
-    key: 'bootstrapConfigSettings',
-    value: function bootstrapConfigSettings() {
-      var serverConfigPath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfigPath;
-      var deploySettingsPath = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.deploySettingsPath;
-
-      this.serverConfig = require(serverConfigPath);
-      this.deployConfig = require(deploySettingsPath);
-    }
-
-    /**
-     * Confirms the config files have the necessary data.
-     * @param  {string} serverConfig Data from the server configuration file.
-     * @param  {string} deployConfig Data from the deploy configuration file.
-     * @return {Boolean|error} True if they are valid.
-     */
-
-  }, {
-    key: 'configSettingsAreValid',
-    value: function configSettingsAreValid() {
-      var serverConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfig;
-      var deployConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.deployConfig;
-
-      if ((typeof serverConfig === 'undefined' ? 'undefined' : _typeof(serverConfig)) !== 'object') {
-        throw new Error('.deploy-servers.js is invalid. It must export an object.');
-      }
-
-      if ((typeof deployConfig === 'undefined' ? 'undefined' : _typeof(deployConfig)) !== 'object') {
-        throw new Error('.deploy-settings.js is invalid. It must export an object.');
-      }
-
-      return true;
-    }
-
-    /**
-     * Assuming configs are valid, runs the script.
-     */
-
-  }, {
-    key: 'run',
-    value: function run() {
-      this.maybeDeploy();
-    }
-
-    /**
-     * Deploys if the current branch is in the config.
-     */
-
-  }, {
-    key: 'maybeDeploy',
-    value: function maybeDeploy() {
-      var _this = this;
-
-      (0, _child_process.exec)('git rev-parse --abbrev-ref HEAD', execCommandOptions, function (error, stdout) {
-        if (error) {
-          throw new Error('exec error: ' + error);
+          case 12:
+          case 'end':
+            return _context.stop();
         }
-
-        _this.gitBranch = stdout.trim();
-
-        console.log('The current branch is ' + _this.gitBranch + '.');
-
-        if (_this.gitBranch in _this.serverConfig && _this.serverConfig[_this.gitBranch].active === true) {
-          console.log('Deploying to ' + _this.gitBranch + ' ...');
-
-          _this.rsyncToServer();
-        } else {
-          console.log('Not deploying to ' + _this.gitBranch + '. It\'s not in .deploy-servers.js');
-        }
-      });
-    }
-
-    /**
-     * Make a string of default rsync args.
-     * @param  {Array}  defaultArgs Default args.
-     * @return {String} The string of default args plus any additional ones.
-     */
-
-  }, {
-    key: 'makeRsyncArgs',
-    value: function makeRsyncArgs() {
-      var defaultArgs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['--perms', '--chmod=Du+rwx', '-arv', '--delete', '--copy-links'];
-
-      var args = defaultArgs.map(function (arg) {
-        return arg;
-      });
-
-      if (this.deployConfig.include) {
-        args = args.concat(this.deployConfig.include.map(function (glob) {
-          return '--include=' + glob;
-        }));
       }
+    }, _callee, undefined);
+  }));
 
-      if (this.deployConfig.exclude) {
-        args = args.concat(this.deployConfig.exclude.map(function (glob) {
-          return '--exclude=' + glob;
-        }));
-      }
-
-      return args.join(' ');
-    }
-
-    /**
-     * Runs the rsync command.
-     * @param  {string} serverConfig The server config for this git branch.
-     */
-
-  }, {
-    key: 'rsyncToServer',
-    value: function rsyncToServer() {
-      var serverConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfig[this.gitBranch];
-
-      var args = this.makeRsyncArgs();
-
-      var command = 'rsync ' + args + ' ' + (serverConfig.port ? '-e "ssh -p ' + serverConfig.port + '" ' : '') + serverConfig.srcPath + ' ' + serverConfig.username + '@' + serverConfig.server + ':' + serverConfig.destPath;
-
-      console.log(command);
-
-      (0, _child_process.exec)(command, execCommandOptions, function (error, stdout) {
-        if (error) {
-          throw new Error('exec error: ' + error);
-        }
-
-        console.log('' + stdout);
-      });
-    }
-  }]);
-
-  return NodeAutodeployWP;
+  return function run() {
+    return _ref.apply(this, arguments);
+  };
 }();
-
-exports.default = NodeAutodeployWP;
