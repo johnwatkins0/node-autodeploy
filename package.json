@@ -5,7 +5,12 @@
   "scripts": {
     "start": "babel src --out-dir dist --watch",
     "lint": "eslint src/",
-    "test": "jest"
+    "test": "yarn lint && jest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn test"
+    }
   },
   "repository": {
     "type": "git",
