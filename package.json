@@ -2,6 +2,7 @@
   "name": "@johnwatkins0/node-autodeploy",
   "version": "1.0.21",
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
+  "bin" : { "autodeploy" : "." },
   "scripts": {
     "start": "babel src --out-dir dist --watch",
     "lint": "eslint src/",
@@ -26,13 +27,10 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.22.0",
     "babel-preset-node6": "^11.0.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-react": "^6.10.3",
     "husky": "^1.0.0-rc.2",
     "jest": "^22.4.3"
   },
