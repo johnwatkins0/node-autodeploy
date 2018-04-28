@@ -14,7 +14,7 @@ describe('maybeDeploy function', () => {
   it('handles deployment but times out', async () => {
     COMMAND_DEFAULTS.timeout = 2000;
     const serverConfig2 = { ...serverConfig };
-    serverConfig2.master.active = true;
+    serverConfig2.HEAD.active = true;
     const message = await maybeDeploy(serverConfig2, deployConfig);
 
     expect(message).toMatch(/The current branch is master./);
@@ -23,23 +23,26 @@ describe('maybeDeploy function', () => {
   it('works with a port number', async () => {
     COMMAND_DEFAULTS.timeout = 2000;
     const serverConfig2 = { ...serverConfig };
-    serverConfig2.master.active = true;
-    serverConfig2.master.port = 20;
+    serverConfig2.HEAD.active = true;
+    serverConfig2.HEAD.port = 20;
     const message = await maybeDeploy(serverConfig2, deployConfig);
 
     expect(message).toMatch(/The current branch is master./);
   });
 
   it('handles deployment successfully', async () => {
+    const branch = global.GIT_BRANCH;
+    global.GIT_BRANCH = 'HEAD';
     const serverConfig2 = { ...serverConfig };
-    serverConfig2.master.active = true;
-    serverConfig2.master.server = '';
-    serverConfig2.master.destPath = path.resolve(__dirname, './rsync-target-dir');
-    serverConfig2.master.username = '';
-    delete serverConfig2.master.port;
+    serverConfig2.HEAD.active = true;
+    serverConfig2.HEAD.server = '';
+    serverConfig2.HEAD.destPath = path.resolve(__dirname, './rsync-target-dir');
+    serverConfig2.HEAD.username = '';
+    delete serverConfig2.HEAD.port;
 
     const message = await maybeDeploy(serverConfig2, deployConfig);
 
     expect(message).toMatch(/total size is/);
+    global.GIT_BRANCH = branch;
   });
 });

@@ -11,12 +11,15 @@ describe('run function', () => {
   });
 
   it('handles config objects in global scope', async () => {
+    const branch = global.GIT_BRANCH;
+    global.GIT_BRANCH = 'HEAD';
     COMMAND_DEFAULTS.timeout = 2000;
-    global.serverConfig.master.active = true;
+    global.serverConfig.HEAD.active = true;
     const message = await run(path.resolve(__dirname, './valid-directory'));
-    expect(message).toMatch(/Deploying to master/);
-    serverConfig.master.active = false;
+    expect(message).toMatch(/Deploying to HEAD/);
+    serverConfig.HEAD.active = false;
     COMMAND_DEFAULTS.timeout = 0;
+    global.GIT_BRANCH = branch;
   });
 
   it('handles when config objects are not in global scope', async () => {

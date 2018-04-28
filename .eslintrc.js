@@ -7,7 +7,6 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
-    'no-console': [ 'error', { allow: [ 'log', 'error' ] } ],
     "import/prefer-default-export": 0
   }
 };
