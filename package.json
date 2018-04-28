@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/johnwatkins0/node-autodeploy#readme",
   "dependencies": {
+    "git-branch": "^2.0.1",
     "prompt": "^1.0.0"
   },
   "devDependencies": {
