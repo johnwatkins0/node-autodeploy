@@ -85,8 +85,8 @@ export default class NodeAutodeployWP {
     serverConfigPath = this.serverConfigPath,
     deploySettingsPath = this.deploySettingsPath,
   ) {
-    this.serverConfig = require(this.serverConfigPath);
-    this.deployConfig = require(this.deploySettingsPath);
+    this.serverConfig = require(serverConfigPath);
+    this.deployConfig = require(deploySettingsPath);
   }
 
   /**

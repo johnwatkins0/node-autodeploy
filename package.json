@@ -1,5 +1,5 @@
 {
-  "name": "node-autodeploy",
+  "name": "@johnwatkins0/node-autodeploy",
   "version": "1.0.21",
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
   "scripts": {

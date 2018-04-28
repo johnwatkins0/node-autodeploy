@@ -7,7 +7,7 @@ Associate branches of a Git project with remote servers. Auto-sync your reposito
 Install the package in your project:
 
 ```
-npm install --save-dev node-autodeploy
+npm install --save-dev @johnwatkins0/node-autodeploy
 ```
 
 ### .deploy-servers.js

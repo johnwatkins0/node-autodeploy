@@ -110,8 +110,8 @@ var NodeAutodeployWP = function () {
       var serverConfigPath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.serverConfigPath;
       var deploySettingsPath = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.deploySettingsPath;
 
-      this.serverConfig = require(this.serverConfigPath);
-      this.deployConfig = require(this.deploySettingsPath);
+      this.serverConfig = require(serverConfigPath);
+      this.deployConfig = require(deploySettingsPath);
     }
 
     /**
