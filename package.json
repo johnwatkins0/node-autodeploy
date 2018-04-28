@@ -1,6 +1,6 @@
 {
   "name": "@johnwatkins0/node-autodeploy",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
   "bin": {
     "autodeploy": "."
