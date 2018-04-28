@@ -1,6 +1,6 @@
 {
   "name": "node-autodeploy",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
   "scripts": {
     "start": "babel src --out-dir dist --watch",
