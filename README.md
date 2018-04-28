@@ -1,4 +1,4 @@
-# node-autodeploy
+# node-autodeploy [![Build Status](https://travis-ci.org/johnwatkins0/node-autodeploy-wp.svg?branch=master)](https://travis-ci.org/johnwatkins0/node-autodeploy-wp)
 
 Associate branches of a Git project with remote servers. Auto-sync your repository to the remote server over SSH. Useful for developers working with servers they have minimal control over.
 
@@ -77,3 +77,16 @@ module.exports = {
 With the two settings files in place, execute the following in the project's root:
 
 `node node_modules/node-autodeploy`
+
+Or use the provided binary:
+
+`node node_modules/.bin/autodeploy`
+
+Or use an NPM script: 
+
+```JSON
+{
+  "scripts": {
+    "deploy": "autodeploy"
+  }
+}
