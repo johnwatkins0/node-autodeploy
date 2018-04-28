@@ -1,4 +1,4 @@
-# node-autodeploy-wp
+# node-autodeploy
 
 Associate branches of a Git project with remote servers. Auto-sync your repository to the remote server over SSH. Useful for developers working with servers they have minimal control over.
 
@@ -7,7 +7,7 @@ Associate branches of a Git project with remote servers. Auto-sync your reposito
 Install the package in your project:
 
 ```
-npm install --save-dev node-autodeploy-wp
+npm install --save-dev node-autodeploy
 ```
 
 ### .deploy-servers.js
@@ -76,4 +76,4 @@ module.exports = {
 
 With the two settings files in place, execute the following in the project's root:
 
-`node node_modules/node-autodeploy-wp`
+`node node_modules/node-autodeploy`

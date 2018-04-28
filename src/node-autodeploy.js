@@ -55,13 +55,13 @@ export default class NodeAutodeployWP {
    */
   configFilesExist(
     serverConfigPath = this.serverConfigPath,
-    deploySettingsPath = this.deploySettingsPath
+    deploySettingsPath = this.deploySettingsPath,
   ) {
     if (fs.existsSync(serverConfigPath) === false) {
       throw new Error(
         'No deploy server settings found in project. ' +
           'Create .deploy-servers.js. ' +
-          'More: https://github.com/johnwatkins0/node-autodeploy-wp'
+          'More: https://github.com/johnwatkins0/node-autodeploy',
       );
     }
 
@@ -69,7 +69,7 @@ export default class NodeAutodeployWP {
       throw new Error(
         'No deploy server settings found in project. ' +
           'Create .deploy-settings.js. ' +
-          'More: https://github.com/johnwatkins0/node-autodeploy-wp'
+          'More: https://github.com/johnwatkins0/node-autodeploy',
       );
     }
 
@@ -83,7 +83,7 @@ export default class NodeAutodeployWP {
    */
   bootstrapConfigSettings(
     serverConfigPath = this.serverConfigPath,
-    deploySettingsPath = this.deploySettingsPath
+    deploySettingsPath = this.deploySettingsPath,
   ) {
     this.serverConfig = require(this.serverConfigPath);
     this.deployConfig = require(this.deploySettingsPath);
@@ -97,17 +97,17 @@ export default class NodeAutodeployWP {
    */
   configSettingsAreValid(
     serverConfig = this.serverConfig,
-    deployConfig = this.deployConfig
+    deployConfig = this.deployConfig,
   ) {
     if (typeof serverConfig !== 'object') {
       throw new Error(
-        '.deploy-servers.js is invalid. It must export an object.'
+        '.deploy-servers.js is invalid. It must export an object.',
       );
     }
 
     if (typeof deployConfig !== 'object') {
       throw new Error(
-        '.deploy-settings.js is invalid. It must export an object.'
+        '.deploy-settings.js is invalid. It must export an object.',
       );
     }
 
@@ -146,10 +146,10 @@ export default class NodeAutodeployWP {
           this.rsyncToServer();
         } else {
           console.log(
-            `Not deploying to ${this.gitBranch}. It's not in .deploy-servers.js`
+            `Not deploying to ${this.gitBranch}. It's not in .deploy-servers.js`,
           );
         }
-      }
+      },
     );
   }
 
@@ -165,19 +165,19 @@ export default class NodeAutodeployWP {
       '-arv',
       '--delete',
       '--copy-links',
-    ]
+    ],
   ) {
-    let args = defaultArgs.map((arg) => arg);
+    let args = defaultArgs.map(arg => arg);
 
     if (this.deployConfig.include) {
       args = args.concat(
-        this.deployConfig.include.map((glob) => `--include=${glob}`)
+        this.deployConfig.include.map(glob => `--include=${glob}`),
       );
     }
 
     if (this.deployConfig.exclude) {
       args = args.concat(
-        this.deployConfig.exclude.map((glob) => `--exclude=${glob}`)
+        this.deployConfig.exclude.map(glob => `--exclude=${glob}`),
       );
     }
 

@@ -1,40 +1,41 @@
 {
-  "name": "node-autodeploy-wp",
+  "name": "node-autodeploy",
   "version": "1.0.20",
-  "description":
-    "Deploy a project to a remote server when it's pushed to GitHub. ",
+  "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
   "scripts": {
-    "test": "node ./node_modules/jest/bin/jest"
+    "start": "babel src --out-dir dist --watch",
+    "lint": "eslint src/",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/johnwatkins0/node-autodeploy-wp.git"
+    "url": "git+https://github.com/johnwatkins0/node-autodeploy.git"
   },
   "author": "John Watkins",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/johnwatkins0/node-autodeploy-wp/issues"
+    "url": "https://github.com/johnwatkins0/node-autodeploy/issues"
   },
-  "homepage": "https://github.com/johnwatkins0/node-autodeploy-wp#readme",
+  "homepage": "https://github.com/johnwatkins0/node-autodeploy#readme",
   "dependencies": {},
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-node6": "^11.0.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^14.1.0",
-    "eslint-config-google": "^0.7.1",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-notify": "^3.0.0",
-    "gulp-util": "^3.0.8",
-    "husky": "^0.13.2",
-    "jest": "^19.0.2"
+    "husky": "^1.0.0-rc.2",
+    "jest": "^22.4.3"
   },
   "jest": {
     "collectCoverage": true,
-    "collectCoverageFrom": ["src/**/*.js", "!src/index.js"]
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/index.js"
+    ]
   }
 }

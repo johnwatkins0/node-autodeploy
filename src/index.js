@@ -1,4 +1,4 @@
-import NodeAutodeployWP from './node-autodeploy-wp';
+import NodeAutodeployWP from './node-autodeploy';
 
 /**
  * Entry point.
