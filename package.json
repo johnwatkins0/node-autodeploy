@@ -1,8 +1,10 @@
 {
   "name": "@johnwatkins0/node-autodeploy",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Deploy a project to a remote server when it's pushed to GitHub. ",
-  "bin" : { "autodeploy" : "." },
+  "bin": {
+    "autodeploy": "."
+  },
   "scripts": {
     "start": "babel src --out-dir dist --watch",
     "lint": "eslint src/",
