@@ -14,9 +14,9 @@ const runCommand = (command, commandDefaults) => new Promise((resolve) => {
 });
 
 /**
-   * Runs the rsync command.
-   * @param  {string} server The server config for this git branch.
-   */
+ * Runs the rsync command.
+ * @param  {string} server The server config for this git branch.
+ */
 export const rsyncToServer = (server, deployConfig, commandDefaults = COMMAND_DEFAULTS) =>
   new Promise(async (resolve) => {
     const args = makeRsyncArgs(deployConfig);
