@@ -1,5 +1,7 @@
 import branch from 'git-branch';
 
+global.GIT_BRANCH = null;
+
 /**
  * Gets the CWD's git branch.
  *
