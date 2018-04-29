@@ -7,27 +7,27 @@ const { serverConfig } = global;
 describe('run function', () => {
   it('handles deployment', async () => {
     const branch = global.GIT_BRANCH;
-    global.GIT_BRANCH = 'HEAD';
+    global.GIT_BRANCH = 'master';
     const message = await run();
-    expect(message).toMatch(/The current branch is HEAD./);
+    expect(message).toMatch(/The current branch is master./);
     global.GIT_BRANCH = branch;
   });
 
   it('handles config objects in global scope', async () => {
     const branch = global.GIT_BRANCH;
-    global.GIT_BRANCH = 'HEAD';
+    global.GIT_BRANCH = 'master';
     COMMAND_DEFAULTS.timeout = 2000;
-    global.serverConfig.HEAD.active = true;
+    global.serverConfig.master.active = true;
     const message = await run(path.resolve(__dirname, './valid-directory'));
-    expect(message).toMatch(/Deploying to HEAD/);
-    serverConfig.HEAD.active = false;
+    expect(message).toMatch(/Deploying to master/);
+    serverConfig.master.active = false;
     COMMAND_DEFAULTS.timeout = 0;
     global.GIT_BRANCH = branch;
   });
 
   it('handles when config objects are not in global scope', async () => {
     const branch = global.GIT_BRANCH;
-    global.GIT_BRANCH = 'HEAD';
+    global.GIT_BRANCH = 'master';
     const { serverConfig: originalServerConfig, deployConfig } = global;
     const savedServerConfig = { ...originalServerConfig };
     const savedDeployConfig = { ...deployConfig };
@@ -36,7 +36,7 @@ describe('run function', () => {
 
     COMMAND_DEFAULTS.timeout = 2000;
     const message = await run(path.resolve(__dirname, './valid-directory'));
-    expect(message).toMatch(/The current branch is HEAD./);
+    expect(message).toMatch(/The current branch is master./);
     COMMAND_DEFAULTS.timeout = 0;
     global.serverConfig = savedServerConfig;
     global.deployConfig = savedDeployConfig;

@@ -1,5 +1,5 @@
 module.exports = {
-  HEAD: {
+  master: {
     active: false,
     server: 'server-hostname',
     destPath: '/path/on/the/server/',
