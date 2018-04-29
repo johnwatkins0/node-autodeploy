@@ -10,6 +10,7 @@ global.GIT_BRANCH = null;
 export const getGitBranch = () => new Promise(async (resolve) => {
   if (global.GIT_BRANCH !== null) {
     resolve(global.GIT_BRANCH);
+    return;
   }
 
   const branchName = await branch();
