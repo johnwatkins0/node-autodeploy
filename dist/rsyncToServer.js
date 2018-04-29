@@ -25,9 +25,9 @@ var runCommand = function runCommand(command, commandDefaults) {
 };
 
 /**
-   * Runs the rsync command.
-   * @param  {string} server The server config for this git branch.
-   */
+ * Runs the rsync command.
+ * @param  {string} server The server config for this git branch.
+ */
 var rsyncToServer = exports.rsyncToServer = function rsyncToServer(server, deployConfig) {
   var commandDefaults = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _.COMMAND_DEFAULTS;
   return new Promise(function () {

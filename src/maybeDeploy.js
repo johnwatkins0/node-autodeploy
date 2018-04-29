@@ -1,8 +1,8 @@
 import { getGitBranch, rsyncToServer } from '.';
 
 /**
-   * Deploys if the current branch is in the config.
-   */
+ * Deploys if the current branch is in the config.
+ */
 export const maybeDeploy = (serverConfig, deployConfig) => new Promise(async (resolve) => {
   const gitBranch = await getGitBranch();
   let message = '';

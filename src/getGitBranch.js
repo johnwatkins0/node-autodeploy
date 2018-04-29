@@ -1,25 +1,15 @@
-import { exec } from 'child_process';
+import branch from 'git-branch';
 
-import { COMMAND_DEFAULTS } from '.';
-
-global.GIT_BRANCH = null;
-global.GIT_GET_BRANCH_COMMAND = 'git rev-parse --abbrev-ref HEAD';
-
-export const getGitBranch = () => new Promise((resolve, reject) => {
+/**
+ * Gets the CWD's git branch.
+ *
+ * @return {Promise} A promise resolving with the git branch;
+ */
+export const getGitBranch = () => new Promise(async (resolve) => {
   if (global.GIT_BRANCH !== null) {
     resolve(global.GIT_BRANCH);
   }
 
-  exec(
-    global.GIT_GET_BRANCH_COMMAND,
-    COMMAND_DEFAULTS,
-    (error, stdout) => {
-      if (error) {
-        reject('ERROR: The current git branch could not be retrieved.');
-        return;
-      }
-
-      global.GIT_BRANCH = stdout.trim();
-      resolve(global.GIT_BRANCH);
-    });
+  const branchName = await branch();
+  resolve(branchName);
 });
