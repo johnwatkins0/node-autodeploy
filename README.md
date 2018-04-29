@@ -1,4 +1,4 @@
-# node-autodeploy [![Build Status](https://travis-ci.org/johnwatkins0/node-autodeploy-wp.svg?branch=master)](https://travis-ci.org/johnwatkins0/node-autodeploy-wp)
+# node-autodeploy [![Build Status](https://travis-ci.org/johnwatkins0/node-autodeploy.svg?branch=master)](https://travis-ci.org/johnwatkins0/node-autodeploy)
 
 Associate branches of a Git project with remote servers. Auto-sync your repository to the remote server over SSH. Useful for developers working with servers they have minimal control over.
 
